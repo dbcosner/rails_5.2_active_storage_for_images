@@ -1,0 +1,22 @@
+<%= form_with(model: blog_post, local: true) do |form| %>
+  <% if blog_post.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(blog_post.errors.count, "error") %> prohibited this blog_post from being saved:</h2>
+
+      <ul>
+      <% blog_post.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form.label(:name) %><br />
+  <%= form.text_field(:name) %>
+  <%= form.label(:images, 'Add images to the post') %>
+  <%= form.file_field(:images, multiple: true) %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

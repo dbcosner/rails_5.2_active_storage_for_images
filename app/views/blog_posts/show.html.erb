@@ -1,0 +1,12 @@
+<p id="notice"><%= notice %></p>
+
+<p>Name:</p>
+<p><%= @blog_post.name %></p>
+<p>Images:</p>
+<% @blog_post.images.each do |image| %>
+  <p><%= image_tag(image) %></p>
+  <p><%= link_to(image.filename, rails_blob_path(image, disposition: 'attachment')) %></p>
+<% end %>
+
+<%= link_to 'Edit', edit_blog_post_path(@blog_post) %> |
+<%= link_to 'Back', blog_posts_path %>

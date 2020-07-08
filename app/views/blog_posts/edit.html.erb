@@ -1,0 +1,20 @@
+<h1>Editing Blog Post</h1>
+
+<%= render 'form', blog_post: @blog_post %>
+
+<% @blog_post.images.each do |image| %>
+  <div id="<%= "blog-post-id-#{@blog_post.id}-image-id-#{image.id}" %>">
+    <p><%= image_tag(image) %></p>
+    <p><%= link_to(
+      "Delete image: #{image.filename}",
+      destroy_image_blog_post_path(image_id: image.id),
+      confirm: 'Delete image?',
+      remote: true,
+      method: :delete,
+      )
+    %></p>
+  </div>
+<% end %>
+
+<%= link_to 'Show', @blog_post %> |
+<%= link_to 'Back', blog_posts_path %>
