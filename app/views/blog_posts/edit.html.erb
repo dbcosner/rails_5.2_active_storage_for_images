@@ -1,5 +1,15 @@
 <h1>Editing Blog Post</h1>
 
+<%= form_with(model: @blog_post, local: true) do |form| %>
+  <%= form.label(:name) %><br />
+  <%= form.text_field(:name) %>
+  <%= form.label(:body) %><br />
+  <%= form.text_area(:body) %><br />
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
+
 <div id="image-upload-button">
   <%= form_with(model: @blog_post, remote: true) do |form| %>
     <%= form.label(:images, 'Add images to the post') %>

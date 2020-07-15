@@ -1,12 +1,26 @@
 <p id="notice"><%= notice %></p>
 
-<p>Name:</p>
-<p><%= @blog_post.name %></p>
-<p>Images:</p>
-<% @blog_post.images.each do |image| %>
-  <p><%= image_tag(image) %></p>
-  <p><%= link_to(image.filename, rails_blob_path(image, disposition: 'attachment')) %></p>
+<h3><%= @blog_post.name %></h3>
+<% body = @blog_post.body&.split("\n") || [] %>
+<% body.each do |element| %>
+  <% element.strip! %>
+  <%# Example of match: ![alt text of some sort](0) : %>
+  <% if matches = element.match(/\A\!\[(?<alt_text>[a-zA-Z0-9\-_ ]*)\]\((?<image_index>\d+)\)\Z/) %>
+    <div class="blog-image-div">
+      <%= image_tag(@blog_post.images[matches[:image_index].to_i], alt: matches[:alt_text]) %>
+    </div>
+  <%# html tags so I can include Git Gists, etc. : %>
+  <% elsif element.match(/\A<[a-zA-Z]+.*>.*<\/[a-zA-Z]+>\Z/) %>
+    <div class="blog-html-div">
+      <%= element.html_safe %>
+    </div>
+  <% else %>
+    <div class="blog-paragraph-div">
+      <%= element.html_safe %>
+    </div>
+  <% end %>
 <% end %>
+
 
 <%= link_to 'Edit', edit_blog_post_path(@blog_post) %> |
 <%= link_to 'Back', blog_posts_path %>

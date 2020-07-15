@@ -94,26 +94,57 @@ Since this is my personal blog, I thought it was fine to leave it this way and j
 
 ``app/views/blog_posts/edit.html.erb``
 
-I used an Ajax link and server-generated JS to remove images without having to reload the edit form:
+There are three forms. (I won't copy and paste here, since it would be the same as looking at the file.) The top form specifies ``local: true`` and allows you to update the name and body text.
+
+``app/views/blog_posts/update.js.erb``
+
+The second specifies ``remote: true`` for clarity. (This is the default for a ``form_with``-generated form.) The Controller's ``update`` action will still be used, but again I specified ``format.js`` in the ``respond_to`` block to use server-generated JavaScript. This JavaScript:
 
 ```
-<% @blog_post.images.each do |image| %>
-  <div id="<%= "blog-post-id-#{@blog_post.id}-image-id-#{image.id}" %>">
-    <p><%= image_tag(image) %></p>
-    <p><%= link_to(
-      "Delete image: #{image.filename}",
-      destroy_image_blog_post_path(image_id: image.id),
-      confirm: 'Delete image?',
-      remote: true,
-      method: :delete,
-      )
-    %></p>
-  </div>
-<% end %>
+document.getElementById('images-container').innerHTML = "";
+
+// `j` is an alias for `escape_javascript`
+// see : https://medium.com/backticks-tildes/unobtrusive-javascript-in-rails-c37fc757d8b1
+document.getElementById('images-container').innerHTML = "<%= j render partial: 'blog_image', collection: @blog_post.images, as: :image, locals: { blog_post: @blog_post } %>";
+```
+
+...will update the images by rendering the partial with the ``collection`` option:
+
+``app/views/blog_posts/_blog_post_image.html.erb``
+
+```
+<div id="<%= "blog-post-id-#{blog_post.id}-image-id-#{image.id}" %>">
+  <p><%= image_tag(image) %></p>
+  <p><%= link_to(
+    "Delete image: #{image.filename}",
+    destroy_image_blog_post_path(image_id: image.id),
+    confirm: 'Delete image?',
+    remote: true,
+    method: :delete,
+    )
+  %></p>
+</div>
 ```
 
 ``app/views/blog_posts/destroy_image.js.erb``
 
+Finally, the third form makes an Ajax call to the Controller's ``destroy_image`` action, which again uses server-generated JS to remove the appropriate image from the blog post without reloading the Edit page:
+
 ```
 document.getElementById('<%= "blog-post-id-#{@blog_post.id}-image-id-#{@image.id}" %>').remove();
 ```
+
+``app/views/blog_posts/show.html.erb``
+
+I won't copy and paste here. The main point of interest is the use of named captures:
+
+```
+<% if matches = element.match(/\A\!\[(?<alt_text>[a-zA-Z0-9\-_ ]*)\]\((?<image_index>\d+)\)\Z/) %>
+  <div class="blog-image-div">
+    <%= image_tag(@blog_post.images[matches[:image_index].to_i], alt: matches[:alt_text]) %>
+  </div>
+```
+
+### Conclusion
+
+I was able to reuse the code in these tests in my personal page to be able to add images to posts, and to add and remove images from posts while editing without the Edit page reloading or proceeding to the ``update`` action.
