@@ -1,0 +1,11 @@
+<div id="<%= "blog-post-id-#{blog_post.id}-image-id-#{image.id}" %>">
+  <p><%= image_tag(image) %></p>
+  <p><%= link_to(
+    "Delete image: #{image.filename}",
+    destroy_image_blog_post_path(image_id: image.id),
+    confirm: 'Delete image?',
+    remote: true,
+    method: :delete,
+    )
+  %></p>
+</div>

@@ -46,6 +46,7 @@ class BlogPostsController < ApplicationController
       if @blog_post.update(blog_post_params)
         format.html { redirect_to @blog_post, notice: 'Blog post was successfully updated.' }
         format.json { render :show, status: :ok, location: @blog_post }
+        format.js
       else
         format.html { render :edit }
         format.json { render json: @blog_post.errors, status: :unprocessable_entity }
@@ -73,6 +74,7 @@ class BlogPostsController < ApplicationController
   end
 
   private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_blog_post
       @blog_post = BlogPost.find(params[:id])

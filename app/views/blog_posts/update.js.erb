@@ -1,0 +1,7 @@
+console.log('update.js.erb');
+
+document.getElementById('images-container').innerHTML = "";
+
+// `j` is an alias for `escape_javascript`
+// see : https://medium.com/backticks-tildes/unobtrusive-javascript-in-rails-c37fc757d8b1
+document.getElementById('images-container').innerHTML = "<%= j render partial: 'blog_image', collection: @blog_post.images, as: :image, locals: { blog_post: @blog_post } %>";

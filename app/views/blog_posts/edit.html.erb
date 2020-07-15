@@ -1,20 +1,16 @@
 <h1>Editing Blog Post</h1>
 
-<%= render 'form', blog_post: @blog_post %>
+<div id="image-upload-button">
+  <%= form_with(model: @blog_post, remote: true) do |form| %>
+    <%= form.label(:images, 'Add images to the post') %>
+    <%= form.file_field(:images, multiple: true) %>
+    <%= form.submit('Add images') %>
+  <% end %>
+</div>
 
-<% @blog_post.images.each do |image| %>
-  <div id="<%= "blog-post-id-#{@blog_post.id}-image-id-#{image.id}" %>">
-    <p><%= image_tag(image) %></p>
-    <p><%= link_to(
-      "Delete image: #{image.filename}",
-      destroy_image_blog_post_path(image_id: image.id),
-      confirm: 'Delete image?',
-      remote: true,
-      method: :delete,
-      )
-    %></p>
-  </div>
-<% end %>
+<div id="images-container">
+  <%= render partial: 'blog_image', collection: @blog_post.images, as: :image, locals: { blog_post: @blog_post } %>
+</div>
 
 <%= link_to 'Show', @blog_post %> |
 <%= link_to 'Back', blog_posts_path %>
